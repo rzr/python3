@@ -205,13 +205,7 @@ BuildRequires: pkgconfig
 BuildRequires: readline-devel
 BuildRequires: sqlite-devel
 BuildRequires: gdb
-%ifarch %{arm}
-BuildRequires: devtoolset-7-build
-BuildRequires: devtoolset-7-binutils
-BuildRequires: devtoolset-7-gcc
-BuildRequires: devtoolset-7-gcc-c++
-BuildRequires: devtoolset-7-gdb
-%endif
+
 BuildRequires: openssl-devel
 
 BuildRequires: tar
@@ -726,10 +720,6 @@ rm configure pyconfig.h.in
 
 %build
 
-%ifarch %{arm}
-%{?enable_devtoolset7:%{enable_devtoolset7}}
-%endif
-
 # Regenerate the configure script and pyconfig.h.in
 autoconf
 autoheader
@@ -1049,10 +1039,6 @@ mv %{buildroot}%{_bindir}/2to3 %{buildroot}%{_bindir}/2to3-3
 
 %check
 
-%ifarch %{arm}
-%{?enable_devtoolset7:%{enable_devtoolset7}}
-%endif
-
 # first of all, check timestamps of bytecode files
 find %{buildroot} -type f -a -name "*.py" -print0 | \
     LD_LIBRARY_PATH="%{buildroot}%{dynload_dir}/:%{buildroot}%{_libdir}" \
@@ -1110,6 +1096,9 @@ CheckPython() {
     -wW --slowest --findleaks \
     -x test_distutils \
     -x test_bdist_rpm \
+    %ifarch %{arm}
+    -x test_gdb \
+    %endif 
     %ifarch %{mips64}
     -x test_ctypes \
     %endif
