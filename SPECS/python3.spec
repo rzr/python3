@@ -1150,6 +1150,9 @@ CheckPython() {
     -wW --slowest --findleaks \
     -x test_distutils \
     -x test_bdist_rpm \
+    %ifarch %{arm}
+    -x test_gdb \
+    %endif 
     %ifarch %{mips64}
     -x test_ctypes \
     %endif
